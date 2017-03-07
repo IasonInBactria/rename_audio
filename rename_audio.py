@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 
 import os
 import requests
@@ -22,12 +22,26 @@ def rename_files(url, path):
             print '获取信息失败！状态码%d，%s' % (ret.status_code, str(ret.reason))
             return False
         else:
+            name_list = []
             ret_html = ret.text
-            # print ret_html
+            print ret_html
             xpath_tree = html.fromstring(ret_html)
-            name_list = xpath_tree.xpath('//div[@class="text name"]/span[@class="font-normal"]/text()')
+            raw_list = xpath_tree.xpath('//a[@class="opt download-btn"]/@href')
+            # for item in raw_list:
+                # name_list.append(item.encode('utf-8').split('attrname=')[1])
+                # print item
+
+            # 遍历目录
+            file_list = os.listdir(path)
+            count = 1
             for item in name_list:
-                print item
+                item_content = item.split('\n')[1].encode('utf-8')
+                print item_content
+                # if item_content in file_list:
+                #     new_item = '%02d.%s' % (count, item_content)
+                #     new_name = os.path.join(path, new_item)
+                #     os.rename(os.path.join(path, item_content), new_name)
+                #     count += 1
 
 
 if __name__ == '__main__':
