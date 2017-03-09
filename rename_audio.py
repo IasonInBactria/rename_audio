@@ -74,13 +74,6 @@ def rename_files(url, path):
         login_button = driver.find_element_by_xpath('//a[@class="submit-btn"]')
         login_button.click()
 
-
-        # try:
-        #     element = WebDriverWait(driver).until(
-        #         EC.presence_of_element_located((By.CLASS_NAME,
-        #                 'list list-col5 main-books-list-col5 newest-books-list-col5')))
-        # except:
-        #     driver.quit()
         time.sleep(4)
         #time.sleep(5)
 
@@ -91,7 +84,9 @@ def rename_files(url, path):
         driver.get(audio_url)
         driver.switch_to.frame(0)
         print driver.current_url
-        driver.implicitly_wait(15)
+        driver.implicitly_wait(20)
+        print driver.page_source
+        # 不知道为啥，Firefox加载不出来下载链接，windows可以。。。
         down_url_list = driver.find_elements(By.XPATH, '//a[@class="opt download-btn"]')
         name_list = []
         for item in down_url_list:
