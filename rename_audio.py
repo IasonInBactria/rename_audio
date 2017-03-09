@@ -5,6 +5,7 @@ import requests
 from lxml import html
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import urllib
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
@@ -88,28 +89,28 @@ def rename_files(url, path):
         # driver.get('http://www.justing.com.cn/')
         # element = driver.find_element_by_id('home-recommend')
         driver.get(audio_url)
-        # cur_window = driver.current_window_handle
-        # driver.implicitly_wait(4)
-        # driver.refresh()
-        # cur_window = driver.current_window_handle
-        # try:
-        #     element = WebDriverWait(driver, 10).until(
-        #         EC.presence_of_element_located((By.CLASS_NAME,
-        #                 'list list-col main-audios-list book-audios-list')))
-        # except:
-        #     driver.quit()
-        # driver.switch_to.window(driver.window_handles[0])
-        #time.sleep(10)
         driver.switch_to.frame(0)
         print driver.current_url
-        down_url_list = driver.find_elements_by_xpath('//li[@class="item cf"]')
+        driver.implicitly_wait(15)
+        down_url_list = driver.find_elements(By.XPATH, '//a[@class="opt download-btn"]')
+        name_list = []
         for item in down_url_list:
-            if '.mp3' in item:
-                print item.split('attrname=')[1]
-        # down_url = driver.find_elements_by_class_name('list list-col main-audios-list book-audios-list')
-        # for item in down_url:
-        #     print item
-        print driver.page_source
+            cur_link = item.get_attribute('href')
+            if 'http' in cur_link:
+                cur_file_name = cur_link.split('attname=')[1].split('.mp3')[0].encode('utf-8')
+                cur_file_name = urllib.unquote(cur_file_name)
+                name_list.append(cur_file_name)
+
+        # 遍历目录
+        file_list = os.listdir(path)
+        count = 1
+        for item in name_list:
+            if item in file_list:
+                new_item = '%02d.%s' % (count, item)
+                new_name = os.path.join(path, new_item)
+                os.rename(os.path.join(path, item), new_name)
+                count += 1
+
 
 
 
