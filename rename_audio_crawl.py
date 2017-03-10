@@ -37,7 +37,7 @@ def rename_files(url, path):
             else:
                 name_list = []
                 ret_html = ret.text
-                print ret_html
+                # print ret_html
                 xpath_tree = html.fromstring(ret_html)
                 # 获取book_id
                 book_id = xpath_tree.xpath('//div[@id="books-detail"]/@data-book_id')[0].encode('utf-8')
@@ -60,7 +60,7 @@ def rename_files(url, path):
                         cur_file_name = ret_json['files']['file'].split('attname=')[1].split('.mp3')[0].encode('utf-8')
                         # 解析形如%E7%A9%BF%E8%B6%8A%E7%99%BE%E5%B9%B4%E4%B8'的URL字符串
                         cur_file_name = urllib.unquote(cur_file_name)
-                        name_list.append(cur_file_name)
+                        name_list.append(cur_file_name + '.mp3')
 
                 # 遍历目录
                 file_list = os.listdir(path)
@@ -69,7 +69,10 @@ def rename_files(url, path):
                     if item in file_list:
                         new_item = '%02d.%s' % (count, item)
                         new_name = os.path.join(path, new_item)
-                        os.rename(os.path.join(path, item), new_name)
+                        try:
+                            os.rename(os.path.join(path, item), new_name)
+                        except Exception as e:
+                            print e.message
                         count += 1
 
 
